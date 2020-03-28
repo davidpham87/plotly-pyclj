@@ -2,10 +2,9 @@
 {:deps {:aliases [:cljs]}
 
  :dev-http {8080 "public"}
-
  :builds
  {:ui
   {:target :browser
    :output-to "public"
    :asset-path "/js"
-   :modules {:main {:init-fn plotly-pyclj.live.core/main}}}}}
+   :modules {:main {:init-fn plotly-pyclj.core/main}}}}}

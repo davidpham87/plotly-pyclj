@@ -3,6 +3,7 @@
    [clojure.tools.logging :as log]
    [immutant.web.async :as async]
    [muuntaja.core :as m]
+   [jsonista.core :as j]
    [muuntaja.middleware :refer (wrap-format wrap-params)]
    [ring.middleware.anti-forgery :refer (wrap-anti-forgery)]
    [ring.util.http-response :as response]))
@@ -25,7 +26,6 @@
       ;; disable wrap-formats for websockets
       ;; since they're not compatible with this middleware
       ((if (:websocket? request) handler wrapped) request))))
-
 
 ;; routes
 
@@ -58,9 +58,9 @@
       (response/content-type "text/html")))
 
 (defn main-js [_]
-  (-> (slurp "js/main.js")
+  (-> (slurp "public/js/main.js")
       (response/ok)
-      (response/content-type "application/json")))
+      (response/content-type "application/javascript")))
 
 (defn home-routes []
   [""
@@ -68,3 +68,14 @@
    ["/" {:get home}]
    ["/js/main.js" {:get main-js}]
    ["/ws" {:get ws-handler}]])
+
+(comment
+
+  (notify-clients!
+   nil
+   (j/write-value-as-string {:data [{:x [0 1 2] :y [3 5 10]}]
+                             :layout {:title "WOOW Mimi this is speed"}}))
+  (notify-clients! nil "Test 2")
+
+
+  )

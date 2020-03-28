@@ -1,0 +1,28 @@
+{
+  "name": "plotly-pyclj",
+  "version": "1.0.0",
+  "description": "A Clojure library designed to wrap plotly and plotly express for clojure users.",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidpham87/plotly-clj.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidpham87/plotly-clj/issues"
+  },
+  "homepage": "https://github.com/davidpham87/plotly-clj#readme",
+  "dependencies": {
+    "plotly.js": "^1.52.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-plotly.js": "^2.4.0"
+  }
+}

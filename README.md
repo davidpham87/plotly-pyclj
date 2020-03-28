@@ -1,10 +1,10 @@
 # plotly-pyclj
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure library designed to wrap plotly and plotly express for clojure users.
 
 ## Usage
 
-FIXME
+Installation
 
 ## License
 

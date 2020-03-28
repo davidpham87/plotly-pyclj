@@ -2,9 +2,9 @@
   (:require
    [clojure.tools.logging :as log]
    [immutant.web.middleware :refer (wrap-session)]
+   [luminus.http-server :as http]
    [plotly-pyclj.routes :refer (home-routes)]
    [reitit.ring :as ring]
-   [luminus.http-server :as http]
    [ring.middleware.content-type :refer (wrap-content-type)]
    [ring.middleware.defaults :refer (site-defaults wrap-defaults)]
    [ring.middleware.flash :refer (wrap-flash)]
@@ -63,3 +63,7 @@
      server)))
 
 (defn stop! [] (http/stop @server))
+
+(comment
+  (start! {:options {:port 8083}})
+  )
