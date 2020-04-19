@@ -49,6 +49,121 @@ since we have our core library to perform operations on trees of maps.
 I hope you will try my library, and find that `plotly-pyclj` can also be
 useful, practical and fun.
 
+
+# Docs
+
+# Quick start
+
+TODO: create sample data set, launch server and plot.
+
+# Quick intro to plotly
+
+Plotly renders a plot from a configuration map containing with keys `[:data
+:layout :config]`.  The `:data` key is a sequence of `traces` which can be
+understood as a specific group of data in a plot. For example, if a line plot
+contains two lines, it will have two traces defining each line. The shape of
+the data (e.g dots, lines, bar) is defined in trace. An example value of data is
+
+``` clojure
+;; a line and dots in the plot
+{:data [{:x [0 1] :y [10 20] :name "first trace"}
+        {:x [0 1] :y [15 5] :name "second trace" :mode :markers}]}
+```
+
+The optional `:layout` key contains the arguments of how the overall plot should
+resemble, e.g. legends position, margins, title shape. Example:
+
+``` clojure
+{:layout {:margins {:t 0 :l 50 :b 50 :r 10}}
+```
+
+The last optional key `:config` describe some Javascript behavior such as
+whether to show the plotly or the behavior of the export button. Example:
+
+``` clojure
+{:config {:toImageButtonOptions {:format "png" :height 560 :width 960 :scale 2}
+          :displayModeBar "hover"
+          :displaylogo false}}
+```
+
+Hence, a configuration map for plotly might look like these:
+
+``` clojure
+;; simple line plot
+{:data [{:x [0 1] :y [10 20]}]}
+
+;; plot with two lines
+{:data [{:x [0 1] :y [10 20]}
+        {:x [0 1] :y [15 5]}]
+ :layout {:margins {:t 0 :b 50}}}
+
+;; bar plot without logo
+{:data [{:x [0 1] :y [10 20] :type :bar}
+        {:x [0 1] :y [15 5] :type :bar}]
+ :config {:displaylogo false}}
+```
+
+The [JavaScript documentation](https://plotly.com/javascript/) of the library
+will provide you with numerous examples. As you can read, it quickly becomes
+verbose, and the goal of the library is to expose the `plotly.express`in
+Clojure to mimick their API.
+
+## Philosophy
+
+As Clojurians, data is exposed first. Hence functions in the library
+manipulates a map of plotly arguments.
+
+In Clojure, we expose data set in two shapes: sequence of maps, or maps of
+sequences. The library supports both, but the first iteration will focus on
+sequence of maps and provides tools to convert maps of sequence into the
+sequences of map shape before applying the library logic.
+
+So a typical data set will look like
+
+``` clojure
+[{:a 0 :b 2 :group :foo}
+ {:a 0 :b 10 :group :bar}
+ {:a 1 :b 3 :group :foo}]
+```
+
+Since data is exposed, we can manipulate our configuration map with our usual
+`get-in`, `assoc-in` and `update-in` functions. The official plotly
+documentation is the ground truth for knowing the appropriate path, although we
+provide some simple support.
+
+
+## API
+
+Layout functions support three arities: the one arity for getting the argument,
+and the two argument for `assoc`ing the tree and the multiple for `update`ing
+the argument.
+
+``` clojure
+(require '[plotly-pyclj.layout :as l])
+
+(def m {:data [{:x [0 1] :y [10 20] :type :bar}]
+        :layout {:margins {:t 10 :b 50}}})
+
+(l/margins m) ;; => {:t 10 :b 50}
+
+(l/margins m {:t 0 :b 10 :l 10})
+;; => {:data [{:x [0 1] :y [10 20] :type :bar}] :layout {:t 0 :b 10 :l 10}}
+
+(l/margins m assoc :r 10)
+;; => {:data [{:x [0 1] :y [10 20] :type :bar}] :layout {:t 10 :b 50 :r 10}}
+
+(l/margins m update :t + 10) ;; same as (update {:t 10 :b 50} :t + 10)
+;; => {:data [{:x [0 1] :y [10 20] :type :bar}] :layout {:t 20 :b 50}}
+```
+
+The paths are exposed in `plotly-pyclj.layout/paths`.
+
+## Export
+
+Export is only supported in Clojure for now, as the interop with python is used
+to export the figure.
+
+
 ## License
 
 Copyright © 2020 David Pham

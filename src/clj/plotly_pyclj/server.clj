@@ -1,4 +1,4 @@
-(ns plotly-pyclj.core
+(ns plotly-pyclj.server
   (:require
    [clojure.tools.logging :as log]
    [immutant.web.middleware :refer (wrap-session)]

@@ -1,15 +1,36 @@
-{:paths ["scripts"]
- :deps
- {cljs-bean {:mvn/version "1.5.0"}
-  cljs-node-io {:mvn/version "1.1.2"}
-  macchiato/core {:mvn/version "0.2.16"}
-  macchiato/hiccups {:mvn/version "0.4.1"}
-  metosin/reitit {:mvn/version "0.3.10"}
-  mount {:mvn/version "0.1.16"}
-  reagent {:mvn/version "0.10.0"}}
+{:paths ["scripts" "src/cljc"]
+
+ :deps {metosin/reitit {:mvn/version "0.4.2"}}
 
  :aliases
- {:cljs {:extra-paths ["src/cljs"]
-         :extra-deps {thheller/shadow-cljs {:mvn/version "2.8.83"}
-                      cider/cider-nrepl {:mvn/version "0.24.0"}
-                      cider/piggieback {:mvn/version "0.4.2"}}}}}
+ {:clj
+  {:extra-paths ["src/clj"]
+   :extra-deps
+   {bk/ring-gzip {:mvn/version "0.2.1"}
+    clj-python/libpython-clj {:mvn/version "1.38"}
+    com.cognitect/transit-clj {:mvn/version "1.0.324"}
+    luminus-immutant {:mvn/version "0.2.5"}
+    metosin/jsonista {:mvn/version "0.2.5"}
+    metosin/muuntaja {:mvn/version "0.6.6"}
+    metosin/ring-http-response {:mvn/version "0.9.1"}
+    nrepl {:mvn/version "RELEASE"}
+    org.clojure/clojure {:mvn/version "1.10.1"}
+    org.clojure/tools.logging {:mvn/version "0.4.1"}
+    org.clojure/spec.alpha {:mvn/version "0.2.176"}
+    org.clojure/core.specs.alpha {:mvn/version "0.2.44"}
+    ring-webjars {:mvn/version "0.2.0"}
+    ring/ring-core {:mvn/version "1.7.1"}
+    ring/ring-defaults {:mvn/version "0.3.1"}}}
+
+  :cljs
+  {:extra-paths ["src/cljs"]
+   :extra-deps {cljs-bean {:mvn/version "1.5.0"}
+                com.cognitect/transit-cljs {:mvn/version "0.8.256"}
+                macchiato/core {:mvn/version "0.2.16"}
+                macchiato/hiccups {:mvn/version "0.4.1"}
+                reagent {:mvn/version "0.10.0"}}}
+
+  :cljs-dev
+  {:extra-deps {thheller/shadow-cljs {:mvn/version "RELEASE"}
+                cider/cider-nrepl {:mvn/version "RELEASE"}
+                cider/piggieback {:mvn/version "0.4.2"}}}}}

@@ -1,7 +1,8 @@
-(ns plotly-pyclj.core
+(ns plotly-pyclj.server
   (:require
    ["react-plotly.js" :default react-plotly]
    [reagent.core :as reagent]
+   [reagent.dom :as dom]
    [plotly-pyclj.websockets :as ws]))
 
 (def content (reagent/atom nil))
@@ -20,7 +21,7 @@
       (reagent/create-element react-plotly data))))
 
 (defn mount-component []
-  (reagent/render [app] (.getElementById js/document "app")))
+  (dom/render [app] (.getElementById js/document "app")))
 
 (defn ^:dev/after-load main []
   (init!)
