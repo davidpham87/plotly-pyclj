@@ -7,7 +7,7 @@ A Clojure library designed to wrap plotly and plotly express for clojure users.
 Installation using deps.edn for now.
 
 ``` clojure
-{:deps {ch.dpham/plotly-pyclj {:git }}
+{:deps {ch.dpham/plotly-pyclj {:git "" :sha1 ""}}
 
 ```
 
