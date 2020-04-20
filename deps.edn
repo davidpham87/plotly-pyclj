@@ -3,12 +3,15 @@
  :deps {metosin/reitit {:mvn/version "0.4.2"}}
 
  :aliases
- {:clj
+ {:dev {:extra-paths ["test/cljc"]}
+
+  :clj
   {:extra-paths ["src/clj"]
    :extra-deps
    {bk/ring-gzip {:mvn/version "0.2.1"}
     clj-python/libpython-clj {:mvn/version "1.38"}
     com.cognitect/transit-clj {:mvn/version "1.0.324"}
+    criterium {:mvn/version "0.4.5"}
     luminus-immutant {:mvn/version "0.2.5"}
     metosin/jsonista {:mvn/version "0.2.5"}
     metosin/muuntaja {:mvn/version "0.6.6"}
@@ -22,15 +25,23 @@
     ring/ring-core {:mvn/version "1.7.1"}
     ring/ring-defaults {:mvn/version "0.3.1"}}}
 
+  :clj-dev {:extra-paths ["test/clj"]}
+
   :cljs
   {:extra-paths ["src/cljs"]
    :extra-deps {cljs-bean {:mvn/version "1.5.0"}
+                cljs-node-io {:mvn/version "1.1.2"}
                 com.cognitect/transit-cljs {:mvn/version "0.8.256"}
                 macchiato/core {:mvn/version "0.2.16"}
                 macchiato/hiccups {:mvn/version "0.4.1"}
                 reagent {:mvn/version "0.10.0"}}}
 
-  :cljs-dev
+  :cljs-build
   {:extra-deps {thheller/shadow-cljs {:mvn/version "RELEASE"}
                 cider/cider-nrepl {:mvn/version "RELEASE"}
-                cider/piggieback {:mvn/version "0.4.2"}}}}}
+                cider/piggieback {:mvn/version "0.4.2"}}}
+  :cljs-dev
+  {:extra-paths ["test/cljs"]}
+
+  :cljs-release
+  {:main-opts ["-m" "shadow.cljs.devtools.cli" "release"]}}}

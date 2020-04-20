@@ -1,5 +1,5 @@
 ;; shadow-cljs configuration
-{:deps {:aliases [:cljs :cljs-dev]}
+{:deps {:aliases [:dev :cljs :cljs-dev :cljs-build]}
 
  :dev-http {8080 "public"}
  :builds

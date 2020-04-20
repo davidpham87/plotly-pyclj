@@ -1,6 +1,7 @@
 # plotly-pyclj
 
-A Clojure library designed to wrap plotly and plotly express for clojure users.
+A Clojure library designed to wrap plotly and a subset of plotly express for
+clojure users.
 
 # Usage
 
@@ -8,7 +9,15 @@ Installation using deps.edn for now.
 
 ``` clojure
 {:deps {ch.dpham/plotly-pyclj {:git "" :sha1 ""}}
+```
 
+## Python deps
+
+These are necessary for the exporting function of your plot. Maybe in the
+future we might not need them.
+
+``` clojure
+pip3 install --user plotly pandas
 ```
 
 # Why the name?
@@ -23,6 +32,17 @@ for plotly.
 I just needed a simple plotting library for Clojure and ClojureScript, and I
 liked [plotly.js](https://plotly.com/). Since Clojure is a language of maker, I
 decided to use it. (This is it for the rationale).
+
+The goal of the project is really just to have dead simple plotting library,
+where user could simply call
+
+``` clojure
+(px/scatter {:data data :x :x :y :y})
+(px/line {:data data :x [:x1 :x2] :y [:y1 :y2]})
+```
+
+and see the result in a web browser. It has to be simple while retaining some
+ability to extend and modify if necessary.
 
 When I started to write the library, [oz](https://github.com/metasoarous/oz)
 and [hanami](https://github.com/jsa-aerial/hanami) /
@@ -49,8 +69,11 @@ since we have our core library to perform operations on trees of maps.
 I hope you will try my library, and find that `plotly-pyclj` can also be
 useful, practical and fun.
 
-
 # Docs
+
+API documentation are
+[here](https://plotly.com/python-api-reference/generated/plotly.express.line.html)
+(from python).
 
 # Quick start
 

@@ -9,5 +9,5 @@
             [refactor-nrepl "RELEASE"]
             [lein-tools-deps "0.4.5"]]
   :lein-tools-deps/config {:config-files [:install :user :project]
-                           :aliases [:clj]}
-  :repl-options {:init-ns plotly-pyclj.core})
+                           :aliases [:dev :clj :clj-dev]}
+  :repl-options {:init-ns plotly-pyclj.server})

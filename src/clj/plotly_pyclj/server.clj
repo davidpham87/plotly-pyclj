@@ -57,13 +57,12 @@
    (let [http-server
          (http/start
           (-> env
-              (assoc  :handler (app))
-              (update :port #(or (-> env :options :port) 8080 %))))]
+              (assoc :handler (app))
+              (update :port #(or (-> options :port) % 8987))))]
      (reset! server http-server)
      server)))
 
 (defn stop! [] (http/stop @server))
 
 (comment
-  (start! {:options {:port 8083}})
-  )
+  (start! {:options {:port 8987}}))
