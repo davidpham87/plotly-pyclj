@@ -5,3 +5,4 @@
 - Show edn, json and plot in front end.
 - next and previous button.
 - Integrant for schema.
+- Write a `trace schema -> data` function.

@@ -38,7 +38,7 @@ where user could simply call
 
 ``` clojure
 (px/scatter {:data data :x :x :y :y})
-(px/line {:data data :x [:x1 :x2] :y [:y1 :y2]})
+(px/line {:data data :x :x :y [:y1 :y2]})
 ```
 
 and see the result in a web browser. It has to be simple while retaining some
@@ -52,6 +52,10 @@ and [hanami](https://github.com/jsa-aerial/hanami) /
 be strictly superior, I found the API a bit to verbose for my simple needs, and
 plotly has well financially supported with a lot of human hours invested in it
 to cover most of my use case.
+
+My goal for the UI is to have something similar to R Studio plot device
+(previous/next plot) and see the representation of the data (html, json,
+edn). (Maybe support for hiccup).
 
 What I like about plotly:
 
@@ -131,6 +135,43 @@ will provide you with numerous examples. As you can read, it quickly becomes
 verbose, and the goal of the library is to expose the `plotly.express`in
 Clojure to mimick their API.
 
+## Helper
+
+Plotly actually defined a json schema and it is leveraged in our codebase.  We
+pulled the relevant part of the schema to create a discoverable api. The
+biggest frustration when dealing with plotly is to know which fields are
+allowed, what are their default and their valid values. To that effect, the
+plotly-pyclj.core/help supports you to discover which the tree structure of the
+traces, layout and config maps.
+
+``` clojure
+(require
+    '[plotly-pyclj.core :refer (help)]
+    '[plotly-pyclj.traces :as traces])
+
+(help traces/scatter) ;; same as (help [:traces :scatter]) where the vector is the path inside the json schema
+{:animatable true,
+ :attributes {},
+ :categories
+ ["cartesian"
+  "svg"
+  "symbols"
+  "errorBarsOK"
+  "showLegend"
+  "scatter-like"
+  "zoomScale"],
+ :meta {},
+ :type "scatter"}
+
+(help traces/scatter-attributes) ;; [:traces :scatter :attributes] too big to show
+(help traces/scatter-x) ;; the path is actually [:traces :scatter :attributes :x] (help traces/scatter-x)
+```
+
+In general for traces, a specific traces (e.g. scatter, bar) will be placed
+under `traces/scatter` and its attributes `x` will be joined with a dash, like
+`traces/scatter-x`.
+
+
 ## Philosophy
 
 As Clojurians, data is exposed first. Hence functions in the library
@@ -153,7 +194,6 @@ Since data is exposed, we can manipulate our configuration map with our usual
 `get-in`, `assoc-in` and `update-in` functions. The official plotly
 documentation is the ground truth for knowing the appropriate path, although we
 provide some simple support.
-
 
 ## API
 
@@ -179,12 +219,30 @@ the argument.
 ;; => {:data [{:x [0 1] :y [10 20] :type :bar}] :layout {:t 20 :b 50}}
 ```
 
-The paths are exposed in `plotly-pyclj.layout/paths`.
+The paths are exposed in `plotly-pyclj.layout/paths`. Idem for `:config`.
 
-## Export
+The data component (`:traces`) is trickier as the `:data` key can be a sequence
+of traces.
+
+## Export (TODO)
 
 Export is only supported in Clojure for now, as the interop with python is used
-to export the figure.
+to export the figure. Export for json, edn and HTML will be supported without dependencies
+(except an internet connection).
+
+``` clojure
+(plotly/export! fig "fig.html")
+(plotly/export! fig "fig.edn")
+(plotly/export! fig "fig.json")
+```
+
+For static images, you need to install [Orca](https://github.com/plotly/orca). And then on the command line
+
+``` clojure
+(plotly/export! fig "fig.json")
+(plotly/export! fig "fig.png" {:orca-cmd "orca"}) ;; this is the default
+(plotly/export! fig "fig.pdf" {:orca-cmd "path/to/orca"})
+```
 
 
 ## License

@@ -1,14 +1,21 @@
 (ns plotly-pyclj.plot
   (:require
+   [cognitect.transit :as transit]
+   [jsonista.core :as j]
    [libpython-clj.python :refer (py.. py.) :as py]
    [libpython-clj.require :refer (require-python)]
-   [jsonista.core :as j]
-   [plotly-pyclj.routes :refer (notify-clients!)]))
+   [plotly-pyclj.data.iris :refer (iris)]
+   [plotly-pyclj.routes :refer (notify-clients!)])
+  (:import [java.io ByteArrayInputStream ByteArrayOutputStream]))
 
 (require-python '[plotly.express :as px])
 
-(def df (py.. px/data iris))
-(def fig (px/scatter df :x "petal_length" :y "petal_width" :color "species"))
+#_(def df (py.. px/data iris))
+(def fig (px/scatter (py/->py-dict iris) :x "petal_length" :y "petal_width" :color "species"))
+
+
+(def out (ByteArrayOutputStream. 4096))
+(def writer (transit/writer out :json))
 
 (def object-mapper (j/object-mapper {:decode-key-fn true}))
 
@@ -22,6 +29,12 @@
 (defn fig->web [m]
   (let [s (j/write-value-as-string m)]
     (notify-clients! nil s)))
+
+(defn fig->web-transit [m]
+  (let [s (j/write-value-as-string m)]
+    (notify-clients! nil s)))
+
+
 
 (comment
   (fig-py->web fig)
@@ -60,15 +73,29 @@
   ;; Execution time upper quantile : 10.205197 ms (97.5%)
   ;; Overhead used : 7.932566 ns
 
-  (let [data (py. fig to_json)]
-    (criterium/quick-bench (j/read-value data object-mapper)))
+  (let [data (j/read-value (py. fig to_json) object-mapper)]
+    (criterium/quick-bench (j/write-value-as-string data object-mapper)))
 
-  ;; Evaluation count : 3282 in 6 samples of 547 calls.
-  ;; Execution time mean : 185.980892 µs
-  ;; Execution time std-deviation : 4.024344 µs
-  ;; Execution time lower quantile : 182.419192 µs ( 2.5%)
-  ;; Execution time upper quantile : 192.199435 µs (97.5%)
-  ;; Overhead used : 7.932566 ns
+  ;; Evaluation count : 5124 in 6 samples of 854 calls.
+  ;; Execution time mean : 118.406625 µs
+  ;; Execution time std-deviation : 3.472181 µs
+  ;; Execution time lower quantile : 115.207694 µs ( 2.5%)
+  ;; Execution time upper quantile : 123.997555 µs (97.5%)
+  ;; Overhead used : 7.861177 ns
 
+  (let [x (atom nil)
+        data (j/read-value (py. fig to_json) object-mapper)]
+    (criterium/quick-bench
+     (let [out (ByteArrayOutputStream.)
+           writer (transit/writer out :json)]
+       (transit/write writer data)
+       (.toString out))))
+
+  ;; Evaluation count : 1578 in 6 samples of 263 calls.
+  ;; Execution time mean : 379.894141 µs
+  ;; Execution time std-deviation : 3.661274 µs
+  ;; Execution time lower quantile : 374.122840 µs ( 2.5%)
+  ;; Execution time upper quantile : 383.639254 µs (97.5%)
+  ;; Overhead used : 7.861177 ns
 
   )
