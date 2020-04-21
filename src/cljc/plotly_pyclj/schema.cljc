@@ -34,32 +34,41 @@
                 (-> "public/data/plot-schema.json"
                     slurp
                     parse-json))
-   :cljs (js/fetch plot-schema-url  #(reset! plot-schame %)))
+   :cljs (js/fetch plot-schema-url  #(reset! plot-schema %)))
+
+(def api-excluded-keys #{:_arrayAttrRegexps
+                         :_compareAsJSON
+                         :_deprecated
+                         :_isSubplotObj
+                         :_noTemplating
+                         :description
+                         :dflt
+                         :datarevision
+                         :editrevision
+                         :editType
+                         :meta
+                         :items
+                         :role
+                         :uirevision
+                         :valType
+                         :impliedEdits
+                         :values})
 
 (defn api-paths
   ([path] (api-paths path 2 []))
   ([path depth root]
-   (let [api-excluded-keys #{:_arrayAttrRegexps
-                             :_compareAsJSON
-                             :_deprecated
-                             :_isSubplotObj
-                             :_noTemplating
-                             :description
-                             :dflt
-                             :datarevision
-                             :editrevision
-                             :editType
-                             :meta
-                             :role
-                             :uirevision
-                             :valType}
-         m (get-in @plot-schema path)
+   (let [m (get-in @plot-schema path)
          result (when (map? m)
                   (->> (keys m) (remove api-excluded-keys) (map #(conj root %)) concat))]
-     (if (zero? depth)
+     (if (or (zero? depth) (nil? result))
        result
        (into result
              (mapcat #(api-paths (conj path (last %)) (dec depth) (conj root (last %))) result))))))
+
+(defn leaf? [node]
+  (if (map? node) (contains? node :valType) true))
+
+#_(defmethod description :traces [{:keys [path]}])
 
 (defn api-subtree [prefix-path] #(get-in @plot-schema (into prefix-path %)))
 (defn api-help [subtree-fn]
@@ -68,11 +77,10 @@
     ([path k-or-ks]
      (let [rf #(if (map? %)
                  (if (keyword? k-or-ks) (get % k-or-ks)
-                     (select-keys % k-or-ks)) %)]
-       (->> (mapv #(vector (first %)
-                           (rf (second %)))
-                  (subtree-fn path))
-            (into (sorted-map)))))))
+                     (select-keys % k-or-ks)) %)
+           tree (subtree-fn path)]
+       (when (map? tree)
+         (->> tree (mapv #(vector (first %) (rf (second %)))) (into (sorted-map))))))))
 
 (def paths {:traces [:schema :traces]
             :layout [:schema :layout :layoutAttributes]
@@ -86,10 +94,22 @@
 
 (defn paths->symbol+paths [root paths]
   (let [xf (comp (map #(mapv name %))
-                 (map #(str/join "-" %))
-                 (map symbol))]
+                 (map #(str/join "-" %)))]
     (zipmap (into [] xf paths)
             (mapv #(into root %) paths))))
+
+(defn paths->fn-args [root paths path->node]
+  (let [xf (comp (map #(mapv name %))
+                 (map #(str/join "-" %)))
+        paths (sort-by first (remove #(-> % path->node leaf?) paths))]
+    (map vector
+         (into [] xf paths)
+         (mapv #(into root %) paths)
+         (mapv #(-> % path->node :description) paths)
+         (mapv #(->> (path->node % :dflt)
+                     (remove (fn [[k _]] (api-excluded-keys k)))
+                     (into (sorted-map))) paths))))
+
 
 (comment
   ;; take default dflt for each

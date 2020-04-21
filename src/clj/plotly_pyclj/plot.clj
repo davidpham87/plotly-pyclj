@@ -6,16 +6,18 @@
    [libpython-clj.require :refer (require-python)]
    [plotly-pyclj.data.iris :refer (iris)]
    [plotly-pyclj.routes :refer (notify-clients!)])
-  (:import [java.io ByteArrayInputStream ByteArrayOutputStream]))
+  (:import [java.io ByteArrayOutputStream]))
 
 (require-python '[plotly.express :as px])
 
 #_(def df (py.. px/data iris))
 (def fig (px/scatter (py/->py-dict iris) :x "petal_length" :y "petal_width" :color "species"))
 
-
-(def out (ByteArrayOutputStream. 4096))
-(def writer (transit/writer out :json))
+(defn ->transit [x]
+  (let [out (ByteArrayOutputStream. 4096)
+        writer (transit/writer out :json)]
+    (transit/write writer x)
+    (.toString out)))
 
 (def object-mapper (j/object-mapper {:decode-key-fn true}))
 
@@ -23,24 +25,23 @@
   (j/read-value (py. fig to_json) object-mapper))
 
 (defn fig-py->web [fig]
-  (let [s (py. fig to_json)]
-    (notify-clients! nil s)))
+  (->> (py. fig to_json) (notify-clients! nil)))
 
 (defn fig->web [m]
-  (let [s (j/write-value-as-string m)]
-    (notify-clients! nil s)))
+  (->> (j/write-value-as-string m)
+       (notify-clients! nil)))
 
-(defn fig->web-transit [m]
-  (let [s (j/write-value-as-string m)]
-    (notify-clients! nil s)))
-
-
+(defn fig->web-transit [m] (notify-clients! nil (->transit m)))
 
 (comment
   (fig-py->web fig)
   (-> (fig-py->clj fig)
       #_(update :layout assoc :height 560 :width 960)
       fig->web)
+
+  (-> (fig-py->clj fig)
+      #_(update :layout assoc :height 560 :width 960)
+      fig->web-transit)
 
   ;; benchmarking a bit the difference in performance. JSON seams the fastest
   ;; way for now on my AMD 3700X.
@@ -85,11 +86,7 @@
 
   (let [x (atom nil)
         data (j/read-value (py. fig to_json) object-mapper)]
-    (criterium/quick-bench
-     (let [out (ByteArrayOutputStream.)
-           writer (transit/writer out :json)]
-       (transit/write writer data)
-       (.toString out))))
+    (criterium/quick-bench (->transit data)))
 
   ;; Evaluation count : 1578 in 6 samples of 263 calls.
   ;; Execution time mean : 379.894141 µs
