@@ -245,6 +245,12 @@ For static images, you need to install [Orca](https://github.com/plotly/orca). A
 ```
 
 
+# Development
+
+## Export documentation
+
+The documentation use =mkdocs-material= to generate the documentation.
+
 ## License
 
 Copyright © 2020 David Pham
