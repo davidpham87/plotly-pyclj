@@ -10,22 +10,10 @@ Installation using deps.edn for now.
 ``` clojure
 {:deps {ch.dpham/plotly-pyclj {:git "" :sha1 ""}}
 ```
-
-## Python deps
-
-These are necessary for the exporting function of your plot. Maybe in the
-future we might not need them.
-
-``` clojure
-pip3 install --user plotly pandas
-```
-
 # Why the name?
 
 The original goal of the project was to mimick
-[plotly.express](https://plotly.com/python/plotly-express/) api. A first
-version of the library used the libpython-clj to interop with the python api
-for plotly.
+[plotly.express](https://plotly.com/python/plotly-express/) api for Clojure.
 
 # Rationale
 
@@ -82,6 +70,10 @@ API documentation are
 # Quick start
 
 TODO: create sample data set, launch server and plot.
+
+
+
+
 
 # Quick intro to plotly
 
@@ -227,8 +219,8 @@ of traces.
 ## Export (TODO)
 
 Export is only supported in Clojure for now, as the interop with python is used
-to export the figure. Export for json, edn and HTML will be supported without dependencies
-(except an internet connection).
+to export the figure. Export for json, edn and HTML will be supported without
+dependencies (except an internet connection).
 
 ``` clojure
 (plotly/export! fig "fig.html")
@@ -243,7 +235,6 @@ For static images, you need to install [Orca](https://github.com/plotly/orca). A
 (plotly/export! fig "fig.png" {:orca-cmd "orca"}) ;; this is the default
 (plotly/export! fig "fig.pdf" {:orca-cmd "path/to/orca"})
 ```
-
 
 # Development
 

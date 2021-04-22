@@ -14,6 +14,7 @@
     b))
 
 (defonce content (reagent/atom []))
+(defonce content-cursor (reagent/atom 1))
 
 (defn connect!
   ([] (connect! 8987))
@@ -68,6 +69,14 @@
    [port-label @ws/ws-connected?]
    [port-input-comp]])
 
+(defn content-control []
+  [:<>
+   [:button {:style {:margin-right 10}
+             :on-click #(swap! content-cursor (fn [x] (min (count @content) (inc x))))}
+    "\u2B05"]
+   [:button {:on-click #(swap! content-cursor (fn [x] (max 1 (dec x))))} "\u27A1"]
+   [:button {:style {:margin-left 10} :on-click #(reset! content [])} "\uD83D\uDDD1"]])
+
 (defn msg-format-view []
   [:div {:style {:display :inline}} @(reagent/cursor app-state [:msg-format])])
 
@@ -78,14 +87,17 @@
    :displaylogo false})
 
 (defmulti set-default-args :format)
+
 (defmethod set-default-args :default [m]
   (set-default-args (assoc m :format :transit)))
+
 (defmethod set-default-args :transit [{:keys [data]}]
   (-> data
       (assoc-in [:style] {:width "100%" :height "100%"})
       (update-in [:config] #(deep-merge default-config %))
       (assoc-in [:layout :autosize] true)
       (assoc :useResizeHandler true)))
+
 (defmethod set-default-args :json [{:keys [data]}]
   (gobj/set! data "style" #js {:width "100%" :height "100%"})
   (let [config (->> (.-config data) ->clj (deep-merge default-config) ->js)]
@@ -108,11 +120,17 @@
         [:div "Invalid message format"])]]))
 
 (defn app []
-  [plot (last @content) @msg-format])
+  [plot (first (take-last @content-cursor @content)) @msg-format])
 
 (defn mount-component []
-  (dom/render [:<> [:div [port-input] [msg-format-view]]
-               [app]] (.getElementById js/document "app")))
+  (dom/render
+   [:div {:style {:padding 20}}
+    [:div {:style {:display :flex :width "100%" :justify-content :space-between
+                   :align-items :center}}
+     [port-input] [msg-format-view]
+     [:div {:style {:display :flex :margin-right 20}} [content-control]]]
+    [app]]
+   (.getElementById js/document "app")))
 
 (defn ^:dev/after-load main []
   (connect!)

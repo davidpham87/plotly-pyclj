@@ -65,4 +65,6 @@
 (defn stop! [] (http/stop @server))
 
 (comment
-  (start! {:options {:port 8987}}))
+  (start! {:options {:port 8987}})
+  (stop!)
+  )

@@ -1,6 +1,6 @@
-{:paths ["scripts" "src/cljc"]
+{:paths ["scripts" "src/cljc" "resources"]
 
- :deps {metosin/reitit {:mvn/version "0.4.2"}}
+ :deps {metosin/reitit {:mvn/version "0.5.12"}}
 
  :aliases
  {:dev {:extra-paths ["test/cljc"]}
@@ -8,40 +8,39 @@
   :clj
   {:extra-paths ["src/clj"]
    :extra-deps
-   {bk/ring-gzip {:mvn/version "0.2.1"}
-    clj-python/libpython-clj {:mvn/version "1.38"}
+   {bk/ring-gzip {:mvn/version "0.3.0"}
+    clj-python/libpython-clj {:mvn/version "1.46"}
     com.cognitect/transit-clj {:mvn/version "1.0.324"}
-    criterium {:mvn/version "0.4.5"}
-    luminus-immutant {:mvn/version "0.2.5"}
-    metosin/jsonista {:mvn/version "0.2.5"}
-    metosin/muuntaja {:mvn/version "0.6.6"}
-    metosin/ring-http-response {:mvn/version "0.9.1"}
-    nrepl {:mvn/version "RELEASE"}
-    org.clojure/clojure {:mvn/version "1.10.1"}
-    org.clojure/tools.logging {:mvn/version "0.4.1"}
-    org.clojure/spec.alpha {:mvn/version "0.2.176"}
-    org.clojure/core.specs.alpha {:mvn/version "0.2.44"}
-    ring-webjars {:mvn/version "0.2.0"}
-    ring/ring-core {:mvn/version "1.7.1"}
-    ring/ring-defaults {:mvn/version "0.3.1"}}}
+    criterium/criterium {:mvn/version "0.4.6"}
+    luminus-immutant/luminus-immutant {:mvn/version "0.2.5"}
+    metosin/jsonista {:mvn/version "0.3.1"}
+    metosin/muuntaja {:mvn/version "0.6.8"}
+    metosin/ring-http-response {:mvn/version "0.9.2"}
+    org.clojure/clojure {:mvn/version "1.10.3"}
+    org.clojure/tools.logging {:mvn/version "1.1.0"}
+    org.clojure/spec.alpha {:mvn/version "0.2.194"}
+    org.clojure/core.specs.alpha {:mvn/version "0.2.56"}
+    ring-webjars/ring-webjars {:mvn/version "0.2.0"}
+    ring/ring-core {:mvn/version "1.9.2"}
+    ring/ring-defaults {:mvn/version "0.3.2"}}}
 
   :clj-dev {:extra-paths ["test/clj"]}
 
   :cljs
   {:extra-paths ["src/cljs"]
-   :extra-deps {cljs-bean {:mvn/version "1.5.0"}
-                cljs-node-io {:mvn/version "1.1.2"}
-                com.cognitect/transit-cljs {:mvn/version "0.8.256"}
-                macchiato/core {:mvn/version "0.2.16"}
+   :extra-deps {cljs-bean/cljs-bean {:mvn/version "1.6.0"}
+                cljs-node-io/cljs-node-io {:mvn/version "1.1.2"}
+                com.cognitect/transit-cljs {:mvn/version "0.8.264"}
+                macchiato/core {:mvn/version "0.2.21"}
                 macchiato/hiccups {:mvn/version "0.4.1"}
-                reagent {:mvn/version "0.10.0"}}}
+                reagent/reagent {:mvn/version "1.0.0"}}}
 
   :cljs-build
   {:extra-deps {thheller/shadow-cljs {:mvn/version "RELEASE"}
                 cider/cider-nrepl {:mvn/version "RELEASE"}
-                cider/piggieback {:mvn/version "0.4.2"}}}
+                cider/piggieback {:mvn/version "0.5.2"}}}
   :cljs-dev
   {:extra-paths ["test/cljs"]}
 
   :cljs-release
-  {:main-opts ["-m" "shadow.cljs.devtools.cli" "release"]}}}
+  {:main-opts ["-m" "shadow.cljs.devtools.cli" "release" "ui"]}}}

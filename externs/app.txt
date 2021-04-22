@@ -1,0 +1,5 @@
+# plotly
+Symbol
+save-button
+data
+stringify

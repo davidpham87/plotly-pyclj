@@ -1,7 +1,7 @@
 (ns plotly-pyclj.schema
   (:require
-   [clojure.string :as str]
-   #?(:clj [jsonista.core :as j])))
+   #?(:clj [jsonista.core :as j])
+   [clojure.string :as str]))
 
 #_(set! *print-length* 1000)
 

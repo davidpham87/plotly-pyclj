@@ -14,3 +14,4 @@ pom.xml.asc
 .shadow-cljs/
 node_modules
 public/js/  
+resources/js/main.js

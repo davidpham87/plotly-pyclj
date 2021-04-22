@@ -1,10 +1,15 @@
 ;; shadow-cljs configuration
 {:deps {:aliases [:dev :cljs :cljs-dev :cljs-build]}
-
  :dev-http {8080 "public"}
  :builds
  {:ui
   {:target :browser
-   :output-to "public"
+   :output-dir "public/js"
    :asset-path "/js"
-   :modules {:main {:init-fn plotly-pyclj.server/main}}}}}
+   :modules {:main {:init-fn plotly-pyclj.server/main}}
+   :release
+   {:output-feature-set :es6
+    :infer-externs :auto
+    :optimizations :advanced
+    :output-dir "resources/public/js"
+    :externs ["externs/app.txt"]}}}}

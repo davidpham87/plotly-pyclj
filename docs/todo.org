@@ -1,0 +1,8 @@
+- html export via custom script. (use view! and export!)
+- png, Export via orca (npm, conda) show example, write some api.
+- API via json schema.
+- Use transit.
+- Show edn, json and plot in front end.
+- next and previous button.
+- Integrant for schema.
+- Write a `trace schema -> data` function.

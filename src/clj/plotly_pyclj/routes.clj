@@ -1,9 +1,10 @@
 (ns plotly-pyclj.routes
   (:require
+   [clojure.java.io :as io]
    [clojure.tools.logging :as log]
    [immutant.web.async :as async]
-   [muuntaja.core :as m]
    [jsonista.core :as j]
+   [muuntaja.core :as m]
    [muuntaja.middleware :refer (wrap-format wrap-params)]
    [ring.middleware.anti-forgery :refer (wrap-anti-forgery)]
    [ring.util.http-response :as response]))
@@ -53,12 +54,14 @@
   (async/as-channel request websocket-callbacks))
 
 (defn home [_]
-  (-> (slurp "public/index.html")
+  (-> (io/resource "public/index.html")
+      slurp
       (response/ok)
       (response/content-type "text/html")))
 
 (defn main-js [_]
-  (-> (slurp "public/js/main.js")
+  (-> (io/resource "public/js/main.js")
+      slurp
       (response/ok)
       (response/content-type "application/javascript")))
 
@@ -76,6 +79,6 @@
    (j/write-value-as-string {:data [{:x [0 1 2] :y [3 5 10]}]
                              :layout {:title "WOOW Mimi this is speed"}}))
   (notify-clients! nil "Test 2")
-
+  (home nil)
 
   )

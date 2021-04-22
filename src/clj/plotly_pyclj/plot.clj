@@ -2,16 +2,8 @@
   (:require
    [cognitect.transit :as transit]
    [jsonista.core :as j]
-   [libpython-clj.python :refer (py.. py.) :as py]
-   [libpython-clj.require :refer (require-python)]
-   [plotly-pyclj.data.iris :refer (iris)]
    [plotly-pyclj.routes :refer (notify-clients!)])
   (:import [java.io ByteArrayOutputStream]))
-
-(require-python '[plotly.express :as px])
-
-#_(def df (py.. px/data iris))
-(def fig (px/scatter (py/->py-dict iris) :x "petal_length" :y "petal_width" :color "species"))
 
 (defn ->transit [x]
   (let [out (ByteArrayOutputStream. 4096)
@@ -19,34 +11,33 @@
     (transit/write writer x)
     (.toString out)))
 
-(def object-mapper (j/object-mapper {:decode-key-fn true}))
-
-(defn fig-py->clj [fig]
-  (j/read-value (py. fig to_json) object-mapper))
-
-(defn fig-py->web [fig]
-  (->> (py. fig to_json) (notify-clients! nil)))
-
 (defn fig->web [m]
   (->> (j/write-value-as-string m)
        (notify-clients! nil)))
 
+(def object-mapper (j/object-mapper {:decode-key-fn true}))
+
 (defn fig->web-transit [m] (notify-clients! nil (->transit m)))
 
+(defn plot [m] (fig->web-transit m))
+
+
 (comment
-  (fig-py->web fig)
-  (-> (fig-py->clj fig)
+  (fig->web-transit {:data [{:x [0 1] :y [2 3]}
+                            {:x [0 1] :y [0 4]}]
+                     :layout {:title "Hello"}})
+  #_(-> (fig-py->clj fig)
       #_(update :layout assoc :height 560 :width 960)
       fig->web)
 
-  (-> (fig-py->clj fig)
+  #_(-> (fig-py->clj fig)
       #_(update :layout assoc :height 560 :width 960)
       fig->web-transit)
 
   ;; benchmarking a bit the difference in performance. JSON seams the fastest
   ;; way for now on my AMD 3700X.
-  (require '[criterium.core :as criterium])
-  (criterium/quick-bench (py. fig to_dict))
+  #_(require '[criterium.core :as criterium])
+  #_(criterium/quick-bench (py. fig to_dict))
 
   ;; Evaluation count : 96 in 6 samples of 16 calls.
   ;; Execution time mean : 1.162875 ms
@@ -55,7 +46,7 @@
   ;; Execution time upper quantile : 1.367614 ms (97.5%)
   ;; Overhead used : 7.932566 ns
 
-  (criterium/quick-bench (py. fig to_json))
+  #_(criterium/quick-bench (py. fig to_json))
 
   ;; Evaluation count : 456 in 6 samples of 76 calls.
   ;; Execution time mean : 1.364200 ms
@@ -64,7 +55,7 @@
   ;; Execution time upper quantile : 1.430867 ms (97.5%)
   ;; Overhead used : 7.932566 ns
 
-  (let [data (py. fig to_dict)]
+  #_(let [data (py. fig to_dict)]
     (criterium/quick-bench (py/->jvm data)))
 
   ;; Evaluation count : 12 in 6 samples of 2 calls.
@@ -74,7 +65,7 @@
   ;; Execution time upper quantile : 10.205197 ms (97.5%)
   ;; Overhead used : 7.932566 ns
 
-  (let [data (j/read-value (py. fig to_json) object-mapper)]
+  #_(let [data (j/read-value (py. fig to_json) object-mapper)]
     (criterium/quick-bench (j/write-value-as-string data object-mapper)))
 
   ;; Evaluation count : 5124 in 6 samples of 854 calls.
@@ -84,7 +75,7 @@
   ;; Execution time upper quantile : 123.997555 µs (97.5%)
   ;; Overhead used : 7.861177 ns
 
-  (let [x (atom nil)
+  #_(let [x (atom nil)
         data (j/read-value (py. fig to_json) object-mapper)]
     (criterium/quick-bench (->transit data)))
 
