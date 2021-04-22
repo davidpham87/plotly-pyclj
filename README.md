@@ -3,13 +3,30 @@
 A Clojure library designed to wrap plotly and a subset of plotly express for
 clojure users.
 
-# Usage
+# Quick Start
 
-Installation using deps.edn for now.
+Add the dependencies:
 
 ``` clojure
-{:deps {ch.dpham/plotly-pyclj {:git "" :sha1 ""}}
+{:deps {org.clojars.davidpham87/plotly-pyclj {:mvn/version "LATEST"}}
 ```
+
+In a namespace, require `plotly-pyclj.core`
+
+``` clojure
+(require '[plotly-pyclj.core :as pc])
+
+(pc/start!) ;; starts the server on port 8987
+
+;; open a browser on http://localhost:8987
+
+(let [plotly-config {:data [{:x [0 1] :y [0 1]}
+                            {:x [0 1] :y [3 2] :type :bar}]}]
+  (pc/plot plotly-config))
+```
+
+See the result on the browser.
+
 # Why the name?
 
 The original goal of the project was to mimick
@@ -66,14 +83,6 @@ useful, practical and fun.
 API documentation are
 [here](https://plotly.com/python-api-reference/generated/plotly.express.line.html)
 (from python).
-
-# Quick start
-
-TODO: create sample data set, launch server and plot.
-
-
-
-
 
 # Quick intro to plotly
 
@@ -216,25 +225,25 @@ The paths are exposed in `plotly-pyclj.layout/paths`. Idem for `:config`.
 The data component (`:traces`) is trickier as the `:data` key can be a sequence
 of traces.
 
-## Export (TODO)
+<!-- ## Export (TODO) -->
 
-Export is only supported in Clojure for now, as the interop with python is used
-to export the figure. Export for json, edn and HTML will be supported without
-dependencies (except an internet connection).
+<!-- Export is only supported in Clojure for now, as the interop with python is used -->
+<!-- to export the figure. Export for json, edn and HTML will be supported without -->
+<!-- dependencies (except an internet connection). -->
 
-``` clojure
-(plotly/export! fig "fig.html")
-(plotly/export! fig "fig.edn")
-(plotly/export! fig "fig.json")
-```
+<!-- ``` clojure -->
+<!-- (plotly/export! fig "fig.html") -->
+<!-- (plotly/export! fig "fig.edn") -->
+<!-- (plotly/export! fig "fig.json") -->
+<!-- ``` -->
 
-For static images, you need to install [Orca](https://github.com/plotly/orca). And then on the command line
+<!-- For static images, you need to install [Orca](https://github.com/plotly/orca). And then on the command line -->
 
-``` clojure
-(plotly/export! fig "fig.json")
-(plotly/export! fig "fig.png" {:orca-cmd "orca"}) ;; this is the default
-(plotly/export! fig "fig.pdf" {:orca-cmd "path/to/orca"})
-```
+<!-- ``` clojure -->
+<!-- (plotly/export! fig "fig.json") -->
+<!-- (plotly/export! fig "fig.png" {:orca-cmd "orca"}) ;; this is the default -->
+<!-- (plotly/export! fig "fig.pdf" {:orca-cmd "path/to/orca"}) -->
+<!-- ``` -->
 
 # Development
 
