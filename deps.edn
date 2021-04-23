@@ -9,7 +9,6 @@
   {:extra-paths ["src/clj"]
    :extra-deps
    {bk/ring-gzip {:mvn/version "0.3.0"}
-    clj-python/libpython-clj {:mvn/version "1.46"}
     com.cognitect/transit-clj {:mvn/version "1.0.324"}
     criterium/criterium {:mvn/version "0.4.6"}
     luminus-immutant/luminus-immutant {:mvn/version "0.2.5"}

@@ -247,6 +247,19 @@ of traces.
 
 # Development
 
+You will need an instance of babashka (bb) on your path.
+
+## ClojureScript
+
+- You will probably need to install the npm dependencies `npm install --save`.
+- Then `shadow-cljs watch ui`.
+
+## Release steps
+
+- Compile the clojurescript with `make release-ui`
+- Create the jar `make jar`
+- Create the `env.edn` file with the `:clojars/username` and `:clojars/password` keys and execute `make jar`.
+
 ## Export documentation
 
 The documentation use =mkdocs-material= to generate the documentation.
