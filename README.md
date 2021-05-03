@@ -225,6 +225,26 @@ The paths are exposed in `plotly-pyclj.layout/paths`. Idem for `:config`.
 The data component (`:traces`) is trickier as the `:data` key can be a sequence
 of traces.
 
+
+## Kaleido
+
+If you decide to install Kaleido with pip3, you can add the following script as
+`kaleido` on your path. Otherwise, modify the `DIR` variable to point out to
+the location of the root folder of the `kaleido` root folder project.
+
+``` bash
+#!/bin/bash
+DIR="$(pip3 show kaleido | grep Location: | sed s/"Location: "//)/kaleido/executable"
+
+export LD_LIBRARY_PATH=$DIR/lib:$LD_LIBRARY_PATH
+export FONTCONFIG_PATH=$DIR/etc/fonts
+export XDG_DATA_HOME=$DIR/xdg
+unset LD_PRELOAD
+
+cd $DIR
+./bin/kaleido $@
+```
+
 <!-- ## Export (TODO) -->
 
 <!-- Export is only supported in Clojure for now, as the interop with python is used -->
