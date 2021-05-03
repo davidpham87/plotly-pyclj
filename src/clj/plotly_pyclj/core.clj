@@ -7,6 +7,8 @@
 (def stop! ps/stop!)
 (def plot pp/plot)
 
+(def export pp/export)
+(def ensure-kaleido! pp/ensure-kaleido!)
 
 (comment
   (stop!)

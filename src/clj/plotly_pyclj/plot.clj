@@ -13,11 +13,24 @@
 
 (def ^:dynamic *kaleido* "kaleido")
 
+(defn set-kaleido-command!
+  "Set the default kaleido command"
+  [s]
+  (alter-var-root #'*kaleido* (constantly s)))
+
 (def ^:dynamic *kaleido-default-args*
-  ["--disable-gpu"
-   "--allow-file-access-from-files"
-   "--disable-breakpad"
-   "--disable-dev-shm-usage"])
+  "Default kaleido command args as map. All keys will be included."
+  {:disable-gpu  nil
+   :allow-file-access-from-files nil
+   :disable-breakpad nil
+   :disable-dev-shm-usage nil})
+
+(defn update-kaleido-args! [f]
+  (alter-var-root #'*kaleido-default-args* f))
+
+(defn ->shell-args [m]
+  (reduce (fn [acc [k v]]
+            (conj acc (str "--" (name k) (when v (str "=" v))))) [] m))
 
 (def ^:dynamic *kaleido-home* "")
 
@@ -42,7 +55,9 @@
 (defn ensure-kaleido!
   ([] (ensure-kaleido! {}))
   ([{:keys [exec-path exec-args chan id]
-     :or {id :default exec-path *kaleido* exec-args *kaleido-default-args*}}]
+     :or {id :default
+          exec-path *kaleido*
+          exec-args (->shell-args *kaleido-default-args*)}}]
    (if (kaleido-alive? id)
      chan
      (let [chan (or chan (a/chan (a/sliding-buffer 1000)))]

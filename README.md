@@ -27,6 +27,58 @@ In a namespace, require `plotly-pyclj.core`
 
 See the result on the browser.
 
+
+## Kaleido
+
+If you decide to install Kaleido with pip3, you can add the following script as
+`kaleido` on your path. Otherwise, modify the `DIR` variable to point out to
+the location of the root folder of the `kaleido` root folder project.
+
+``` bash
+#!/bin/bash
+DIR="$(pip3 show kaleido | grep Location: | sed s/"Location: "//)/kaleido/executable"
+
+export LD_LIBRARY_PATH=$DIR/lib:$LD_LIBRARY_PATH
+export FONTCONFIG_PATH=$DIR/etc/fonts
+export XDG_DATA_HOME=$DIR/xdg
+unset LD_PRELOAD
+
+cd $DIR
+./bin/kaleido $@
+```
+
+You can always set the command line with the `plotly-pyclj.plot/set-kaleido-command!` function.
+
+On Windows, you might rewrite the `kaleido.cmd` to point to the
+directory. Behind a firewall, you might need to specify the path to a `plotly.js` file, this can be done as following
+
+``` clojure
+(plotly-pyclj.plot/update-kaleido-args!
+ (fn [m] (assoc m :plotlyjs "path/to/plotly.js")))
+```
+
+Otherwise, before starting any export, you can always override the command line args in the `plotly-pyclj.plot/ensure-kaleido!`
+
+``` clojure
+(plotly-pyclj.plot/ensure-kaleido!
+ {:exec-args ["--disable-gpu"]
+  :exec-path "some/crazy/path/kaleido"})
+```
+
+If Kaleido is setup correctly, you can simply export your plot as
+
+``` clojure
+(let [plotly-spec {:data [{:x [0 1] :y [0 1]}
+                          {:x [0 1] :y [3 2] :type :bar}]
+                   :layout {:title "Test"}}
+      export-spec {:filename "test"
+                   :format "png"
+                   :width 960
+                   :height 540
+                   :scale 1.5}]
+  (plotly.core/export plotly-spec export-spec))
+```
+
 # Why the name?
 
 The original goal of the project was to mimick
@@ -226,45 +278,6 @@ The data component (`:traces`) is trickier as the `:data` key can be a sequence
 of traces.
 
 
-## Kaleido
-
-If you decide to install Kaleido with pip3, you can add the following script as
-`kaleido` on your path. Otherwise, modify the `DIR` variable to point out to
-the location of the root folder of the `kaleido` root folder project.
-
-``` bash
-#!/bin/bash
-DIR="$(pip3 show kaleido | grep Location: | sed s/"Location: "//)/kaleido/executable"
-
-export LD_LIBRARY_PATH=$DIR/lib:$LD_LIBRARY_PATH
-export FONTCONFIG_PATH=$DIR/etc/fonts
-export XDG_DATA_HOME=$DIR/xdg
-unset LD_PRELOAD
-
-cd $DIR
-./bin/kaleido $@
-```
-
-<!-- ## Export (TODO) -->
-
-<!-- Export is only supported in Clojure for now, as the interop with python is used -->
-<!-- to export the figure. Export for json, edn and HTML will be supported without -->
-<!-- dependencies (except an internet connection). -->
-
-<!-- ``` clojure -->
-<!-- (plotly/export! fig "fig.html") -->
-<!-- (plotly/export! fig "fig.edn") -->
-<!-- (plotly/export! fig "fig.json") -->
-<!-- ``` -->
-
-<!-- For static images, you need to install [Orca](https://github.com/plotly/orca). And then on the command line -->
-
-<!-- ``` clojure -->
-<!-- (plotly/export! fig "fig.json") -->
-<!-- (plotly/export! fig "fig.png" {:orca-cmd "orca"}) ;; this is the default -->
-<!-- (plotly/export! fig "fig.pdf" {:orca-cmd "path/to/orca"}) -->
-<!-- ``` -->
-
 # Development
 
 You will need an instance of babashka (bb) on your path.
@@ -286,7 +299,7 @@ The documentation use =mkdocs-material= to generate the documentation.
 
 ## License
 
-Copyright © 2020 David Pham
+Copyright © 2020-2021 David Pham
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
