@@ -1,8 +1,10 @@
+version=LATEST
+
 cljs-release:
 	clj -A:cljs:cljs-build:cljs-release
 
 jar:
-	clojure -X:jar :aliases '[:clj]' :jar target/plotly-pyclj.jar
+	clojure -X:jar :aliases '[:clj]' :jar target/plotly-pyclj.jar :sync-pom true :version '"$(version)"'
 
 deploy-clojars:
 	env \
