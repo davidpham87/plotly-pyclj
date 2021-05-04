@@ -1,13 +1,14 @@
 (ns plotly-pyclj.plot
   (:require
-   [clojure.core.async :as a]
    [babashka.process :as bp]
+   [clojure.core.async :as a]
    [clojure.java.io :as io]
    [clojure.java.shell :as sh]
    [clojure.pprint :refer (pprint)]
    [cognitect.transit :as transit]
    [jsonista.core :as j]
-   [plotly-pyclj.routes :refer (notify-clients!)])
+   [plotly-pyclj.routes :refer (notify-clients!)]
+   [plotly-pyclj.utils :refer (->transit)])
   (:import [java.io ByteArrayOutputStream]
            java.util.Base64))
 
@@ -118,12 +119,6 @@
          (if (zero? (:code kaleido-output))
            (->file filename kaleido-output)
            (throw (ex-info "Non Zero Kaleido Code" kaleido-output))))))))
-
-(defn ->transit [x]
-  (let [out (ByteArrayOutputStream. 4096)
-        writer (transit/writer out :json)]
-    (transit/write writer x)
-    (.toString out)))
 
 (defn fig->web [m]
   (->> (j/write-value-as-string m)

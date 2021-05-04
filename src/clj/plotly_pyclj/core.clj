@@ -10,6 +10,11 @@
 (def export pp/export)
 (def ensure-kaleido! pp/ensure-kaleido!)
 
+(defn -main [& args]
+  (let [port (or (first args) 8987)]
+    (println (str "Started a server on port: ") port)
+    (start! {:options {:port port}})))
+
 (comment
   (stop!)
   (start!)

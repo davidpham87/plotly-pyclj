@@ -1,6 +1,16 @@
 (ns plotly-pyclj.utils
   "Macro for creating functions"
-  (:require [clojure.pprint :refer (pprint)]))
+  (:require
+   [clojure.pprint :refer (pprint)]
+   [cognitect.transit :as transit])
+  (:import [java.io ByteArrayOutputStream]))
+
+(defn ->transit [x]
+  (let [out (ByteArrayOutputStream. 4096)
+        writer (transit/writer out :json)]
+    (transit/write writer x)
+    (.toString out)))
+
 
 (defmacro reg-path
   "Register a function targeting a path in the the plotly configuration.

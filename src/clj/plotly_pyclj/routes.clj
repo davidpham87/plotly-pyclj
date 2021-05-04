@@ -2,15 +2,16 @@
   (:require
    [clojure.java.io :as io]
    [clojure.tools.logging :as log]
+   [clojure.pprint :refer (pprint)]
    [immutant.web.async :as async]
    [jsonista.core :as j]
    [muuntaja.core :as m]
    [muuntaja.middleware :refer (wrap-format wrap-params)]
+   [plotly-pyclj.utils :refer (->transit)]
    [ring.middleware.anti-forgery :refer (wrap-anti-forgery)]
    [ring.util.http-response :as response]))
 
 ;; middleware
-
 (def instance
   (m/create m/default-options))
 
@@ -67,8 +68,13 @@
 
 (defn home-routes []
   [""
-   {:middleware [wrap-csrf wrap-formats]}
+   {:middleware [#_wrap-csrf wrap-formats]}
    ["/" {:get home}]
+   ["/plotly"
+    {:post
+     (fn [request]
+       (notify-clients! nil (->transit (:body-params request)))
+       (response/ok "Sent!"))}]
    ["/js/main.js" {:get main-js}]
    ["/ws" {:get ws-handler}]])
 
@@ -81,4 +87,8 @@
   (notify-clients! nil "Test 2")
   (home nil)
 
+  (->transit
+   (j/read-value
+    (j/write-value-as-string {:data [{:x [0 1 2] :y [3 5 10]}]
+                                           :layout {:title "WOOW Mimi this is speed"}})))
   )

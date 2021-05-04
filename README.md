@@ -86,6 +86,50 @@ If Kaleido is setup correctly, you can simply export your plot as
   (plotly.core/export plotly-spec export-spec))
 ```
 
+# Server mode
+
+Some languages do not have bindings to plotly, so this server mode allows you
+to send post requests whose body is the plotly configuration.
+
+``` bash
+clojure -m plotly-pyclj.core
+
+# starts the server on port 8987
+# then open a browser on http://localhost:8987
+```
+
+Open a browser on `http://localhost:8987`, then send post request to
+`http://localhost:8987/plotly`:
+
+In Clojure
+
+``` clojure
+(require '[org.httpkit.client :as client])
+(require '[cheshire.core :as j]) ;; or any other json encoding library
+
+(let [m {:data [{:x [0 1 3] :y [4 2 1] :type :bar}
+                {:x [0 1] :y [-2 4]}]}]
+  (client/post
+   "http://localhost:8987/plotly"
+   {:headers {"content-type" "application/json"}
+    :body (j/encode m)}))
+```
+
+In Python
+
+``` python
+import requests
+import json
+
+requests.post(
+    "http://localhost:8987/plotly",
+    headers={"content-type": "application/json"},
+    data=json.dumps({"data": [{"x": [0, 1], "y": [0, 1]},
+                              {"x": [0, 1], "y": [-2, 2]}]}))
+```
+
+And see the result on your browser.
+
 # Why the name?
 
 The original goal of the project was to mimick
