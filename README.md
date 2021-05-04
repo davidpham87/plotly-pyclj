@@ -29,8 +29,13 @@ In a namespace, require `plotly-pyclj.core`
 
 See the result on the browser.
 
+## Export to static image: Kaleido
 
-## Kaleido
+In order to export plotly specs into a static images (png, pdf, jpeg, webp,
+svg), we leverage on the [Kaleido](https://github.com/plotly/Kaleido) project
+from plotly, which bundles only the necessary part of a web browser to generate
+the files. The advantage is that you can install it through python `pip` or
+download the binaries from the release page.
 
 If you decide to install Kaleido with pip3, you can add the following script as
 `kaleido` on your path. Otherwise, modify the `DIR` variable to point out to

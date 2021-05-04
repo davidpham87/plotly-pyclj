@@ -73,16 +73,29 @@
 
 (comment
   (ensure-kaleido!)
-  (kaleido-alive?)
-  )
+  (kaleido-alive?))
 
-(defn ->kaleido [kaleido-process m]
+(defn ->kaleido
+  "Send a map of data to kaleido."
+  [kaleido-process m]
   (let [w (io/writer (:in kaleido-process))]
     (.write w (j/write-value-as-string m))
     (.write w (System/lineSeparator))
     (.flush w)))
 
 (defn export
+  "Export a plotly spec with the export specification.
+
+  - `plotly-spec` is a standard plotly graph definition.
+
+  - `export-spec` contains on top of the kaleido with the
+  typical arguments `(:format, :width, :height, :scale)`, a
+  `:filename` (without format) key to define the path of the output
+  file.
+
+  - kaleido-process is the result of a babashka.process/process call
+  to kaleido.
+  "
   ([plotly-spec] (export plotly-spec {}))
   ([plotly-spec export-spec]
    (export plotly-spec export-spec (:default @kaleido-processes)))
@@ -99,7 +112,9 @@
      (do
        (->kaleido kaleido-process (assoc export-spec :data plotly-spec))
        (let [kaleido-output (j/read-value (a/<!! (:chan kaleido-process)) object-mapper)
-             filename (str (:filename export-spec) "." (:format kaleido-output))]
+             filename (str (:filename export-spec "plotly_export")
+                           "."
+                           (:format kaleido-output))]
          (if (zero? (:code kaleido-output))
            (->file filename kaleido-output)
            (throw (ex-info "Non Zero Kaleido Code" kaleido-output))))))))
