@@ -3,6 +3,8 @@
 A Clojure library designed to wrap plotly and a subset of plotly express for
 clojure users.
 
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.davidpham87/plotly-pyclj.svg)](https://clojars.org/org.clojars.davidpham87/plotly-pyclj)
+
 # Quick Start
 
 Add the dependencies:
