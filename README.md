@@ -68,8 +68,8 @@ Otherwise, before starting any export, you can always override the command line 
 
 ``` clojure
 (plotly-pyclj.plot/ensure-kaleido!
- {:exec-args ["--disable-gpu"]
-  :exec-path "some/crazy/path/kaleido"})
+ {:exec-path "some/crazy/path/kaleido"
+  :exec-args ["--disable-gpu"]})
 ```
 
 If Kaleido is setup correctly, you can simply export your plot as
@@ -83,7 +83,7 @@ If Kaleido is setup correctly, you can simply export your plot as
                    :width 960
                    :height 540
                    :scale 1.5}]
-  (plotly.core/export plotly-spec export-spec))
+  (plotly-pyclj.core/export plotly-spec export-spec))
 ```
 
 # Server mode
