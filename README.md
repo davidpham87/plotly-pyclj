@@ -10,7 +10,7 @@ clojure users.
 Add the dependencies:
 
 ``` clojure
-{:deps {org.clojars.davidpham87/plotly-pyclj {:mvn/version "LATEST"}}
+{:deps {org.clojars.davidpham87/plotly-pyclj {:mvn/version "RELEASE"}}}
 ```
 
 In a namespace, require `plotly-pyclj.core`
