@@ -4,7 +4,7 @@ cljs-release:
 	clj -A:cljs:cljs-build:cljs-release
 
 jar:
-	clojure -X:jar :aliases '[:clj]' :jar target/plotly-pyclj.jar :version '"$(version)"'
+	clojure -T:build jar
 
 deploy-clojars:
 	env \

@@ -1,6 +1,7 @@
 (ns plotly-pyclj.schema
   (:require
    #?(:clj [jsonista.core :as j])
+   #?(:clj [clojure.java.io :as io])
    [clojure.string :as str]))
 
 #_(set! *print-length* 1000)
@@ -31,7 +32,7 @@
 (def plot-schema-url "https://api.plot.ly/v2/plot-schema?format=json&sha1=%27%27&_ga=2.88438941.745717888.1587289572-1181236392.1585152478")
 
 #?(:clj (reset! plot-schema
-                (-> "public/data/plot-schema.json"
+                (-> (io/resource "public/data/plot-schema.json")
                     slurp
                     parse-json))
    :cljs (js/fetch plot-schema-url  #(reset! plot-schema %)))

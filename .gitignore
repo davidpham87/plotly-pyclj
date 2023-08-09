@@ -17,3 +17,4 @@ public/js/
 resources/js/main.js
 env.edn
 .lsp/
+resources/public/js/
